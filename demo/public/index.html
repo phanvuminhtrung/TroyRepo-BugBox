@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BugBox Digital Badge Demo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Troy Demo</p>
+          <h1>BugBox Digital Badges</h1>
+          <p class="lede">
+            Fetch badge assignments from Airtable for a user + session and display them instantly.
+          </p>
+        </div>
+        <!-- <div class="pill">Local or deployable</div> -->
+      </header>
+
+      <section class="panel">
+        <form id="fetchForm" class="form single">
+          <div class="field">
+            <label for="userId">User ID</label>
+            <input id="userId" name="userId" required placeholder="e.g. USR-001" />
+          </div>
+          <button type="submit">Fetch badges</button>
+          <p class="hint">Enter a User ID to fetch badges.</p>
+        </form>
+      </section>
+
+      <section id="results" class="grid"></section>
+    </div>
+
+    <template id="badgeTemplate">
+      <article class="card">
+        <img class="badge-image" alt="Badge image" />
+        <div class="card-body">
+          <p class="pill badge-id"></p>
+          <h3 class="badge-name"></h3>
+          <p class="badge-desc"></p>
+          <dl class="meta">
+            <div><dt>Status</dt><dd class="badge-status"></dd></div>
+            <div><dt>Issued</dt><dd class="badge-issued"></dd></div>
+          </dl>
+        </div>
+      </article>
+    </template>
+
+    <script type="module">
+      const form = document.getElementById('fetchForm');
+      const results = document.getElementById('results');
+      const template = document.getElementById('badgeTemplate');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const userId = event.target.userId.value.trim();
+        if (!userId) return;
+
+        results.innerHTML = '<p class="hint">Loading…</p>';
+
+        try {
+          const url = new URL(`/api/badges/${encodeURIComponent(userId)}`, window.location.origin);
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (!data.assignments || !data.assignments.length) {
+            results.innerHTML = '<p class="hint">No badges found for this user/session.</p>';
+            return;
+          }
+
+          results.innerHTML = '';
+          data.assignments.forEach((assignment) => {
+            const node = template.content.cloneNode(true);
+            node.querySelector('.badge-image').src = assignment.badge.imageUrl || 'https://placehold.co/300x300';
+            node.querySelector('.badge-image').alt = assignment.badge.name || 'Badge';
+            // node.querySelector('.badge-id').textContent = assignment.badge.name || assignment.badge.badgeId || 'Badge';
+            node.querySelector('.badge-name').textContent = assignment.badge.name || 'Badge';
+            node.querySelector('.badge-desc').textContent = assignment.badge.description || 'No description';
+            node.querySelector('.badge-status').textContent = assignment.status;
+            node.querySelector('.badge-issued').textContent =assignment.issuedAt || 'No issued date';
+            results.appendChild(node);
+          });
+        } catch (error) {
+          console.error(error);
+          results.innerHTML = '<p class="hint error">Failed to load badges. Check console.</p>';
+        }
+      });
+    </script>
+  </body>
+</html>

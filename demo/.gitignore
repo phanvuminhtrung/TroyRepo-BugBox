@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.vercel/
+.netlify/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+digitalbadge/.env
+digitalbadge/demo/.env
+
+# Editor/OS junk
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Lockfiles (keep these tracked; remove below lines if you insist on ignoring)
+# package-lock.json
+# pnpm-lock.yaml
+# yarn.lock
