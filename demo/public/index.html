@@ -3,15 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BugBox Digital Badge Demo</title>
+    <title>Bugbox Badges</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="page">
+      <header class="site-header">
+        <a class="brand" href="#">
+          <img src="bugboxlogo.png" alt="Bugbox logo" />
+        </a>
+      </header>
+
       <header class="hero">
         <div>
-          <p class="eyebrow">Troy Demo</p>
-          <h1>BugBox Digital Badges</h1>
+          <p class="eyebrow">COPYRIGHT ©2025 TROY PHAN</p>
+          <h1>Bugbox Badge Search</h1>
           <p class="lede">
             Fetch badge assignments from Airtable for a user + session and display them instantly.
           </p>
@@ -58,7 +64,7 @@
         const userId = event.target.userId.value.trim();
         if (!userId) return;
 
-        results.innerHTML = '<p class="hint">Loading…</p>';
+        results.innerHTML = '<p class="hint">Loading...</p>';
 
         try {
           const url = new URL(`/api/badges/${encodeURIComponent(userId)}`, window.location.origin);
